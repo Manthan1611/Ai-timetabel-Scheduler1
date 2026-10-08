@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Classroom &amp; AI Timetable Scheduler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="home">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand"><span class="brand-mark">🏫</span> Smart Classroom AI</a>
+    <nav class="nav-links">
+      <a href="index.html" data-nav="home">Home</a>
+      <a href="login.html" data-nav="login">Login</a>
+      <a href="timetable.html" data-nav="timetable">Timetable</a>
+      <a href="#features">Features</a>
+      <a href="#about">About</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span id="userChip" class="user-chip" style="display:none;"></span>
+      <a id="notifBell" href="notifications.html" title="Notification Log" style="display:none; position:relative; text-decoration:none;">
+        <button class="theme-toggle" style="font-size:1.1rem;">🔔</button>
+        <span id="notifDot" style="display:none; position:absolute; top:4px; right:4px; width:9px; height:9px; border-radius:50%; background:var(--accent-3); border:2px solid var(--surface);"></span>
+      </a>
+      <a id="dashboardBtn" href="#" title="Go to my dashboard" style="display:none;">
+        <button class="btn sm">My Dashboard</button>
+      </a>
+      <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <span class="eyebrow">● Period 1 begins in 12 min</span>
+    <h1>The timetable that <em>schedules itself</em>, conflict by conflict, avoided.</h1>
+    <p class="lead">
+      Smart Classroom AI builds your college's weekly timetable automatically —
+      matching subjects, teachers and rooms without a single double-booking —
+      then hands every role a dashboard built for what they actually do.
+    </p>
+    <div class="hero-actions">
+      <a href="login.html"><button class="btn">🚀 Get Started</button></a>
+      <a href="timetable.html"><button class="btn secondary">👀 See a sample timetable</button></a>
+    </div>
+  </div>
+
+  <div class="mini-timetable">
+    <div class="mini-tt-head">
+      <span>WEEKLY_SCHEDULE.EXE</span>
+      <span class="live">generating</span>
+    </div>
+    <div class="mini-grid" id="miniGrid"></div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="section-head">
+    <span class="eyebrow">What's inside</span>
+    <h2>One system, five ways to use it</h2>
+    <p>Every portal reads from the same live timetable, so a change made by a teacher shows up for their students instantly.</p>
+  </div>
+
+  <div class="grid cols-3">
+    <div class="card feature-card">
+      <div class="icon">🤖</div>
+      <h3>AI Timetable Engine</h3>
+      <p>Generates a full Monday–Friday schedule in seconds, automatically skipping any room or teacher that's already booked in that slot.</p>
+    </div>
+    <div class="card feature-card">
+      <div class="icon">🏫</div>
+      <h3>Smart Classroom Status</h3>
+      <p>Live capacity, smart board, projector, WiFi and AC status for every room — plus a one-tap occupied / available toggle.</p>
+    </div>
+    <div class="card feature-card">
+      <div class="icon">👨‍🏫</div>
+      <h3>Teacher Portal</h3>
+      <p>Add lectures by subject, semester and room. Clashes are caught before they're saved — not after.</p>
+    </div>
+    <div class="card feature-card">
+      <div class="icon">🎓</div>
+      <h3>Student Portal</h3>
+      <p>Today's classes, attendance, notices and a search bar that filters the whole week by subject or day.</p>
+    </div>
+    <div class="card feature-card">
+      <div class="icon">👨‍💼</div>
+      <h3>Admin Dashboard</h3>
+      <p>Add, edit and remove students, teachers and classrooms, with live counts across the whole college.</p>
+    </div>
+    <div class="card feature-card">
+      <div class="icon">🌓</div>
+      <h3>Dark / Light Mode</h3>
+      <p>Every screen, table and chart adapts instantly — your preference is remembered on your next visit.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="card" style="max-width:820px; margin:0 auto; text-align:center;">
+    <h2>About this project</h2>
+    <p>
+      Smart Classroom &amp; AI Timetable Scheduler is a full-stack college management system
+      powered by Supabase PostgreSQL and Vanilla JavaScript.
+      It generates conflict-free weekly timetables, tracks live classroom availability,
+      manages student attendance, and provides dedicated portals for Admins, Teachers, and Students.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Smart Classroom AI · Powered by Supabase PostgreSQL</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>

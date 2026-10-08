@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notification Log — Smart Classroom AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .notif-item{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:5px solid var(--line-strong);
+    border-radius:var(--radius);
+    padding:18px 20px;
+    margin-bottom:14px;
+    transition:.2s;
+  }
+  .notif-item.unread{
+    border-left-color:var(--accent-3);
+    background:color-mix(in srgb, var(--accent-3) 5%, var(--surface));
+  }
+  .notif-item.unread .notif-label{
+    color:var(--accent-3);
+    font-weight:700;
+    font-size:.75rem;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:6px;
+  }
+  .notif-item.read .notif-label{
+    color:var(--ink-faint);
+    font-size:.75rem;
+    margin-bottom:6px;
+  }
+  .notif-msg{
+    color:var(--ink);
+    font-size:.95rem;
+    line-height:1.55;
+  }
+  .notif-time{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    color:var(--ink-faint);
+    margin-top:8px;
+  }
+  .notif-empty{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--ink-faint);
+  }
+  .notif-empty .big{ font-size:3rem; margin-bottom:12px; }
+  .log-toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:22px;
+  }
+</style>
+</head>
+<body data-page="notifications">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand"><span class="brand-mark">🏫</span> Smart Classroom AI</a>
+    <nav class="nav-links">
+      <a href="teacher.html">⬅ My Dashboard</a>
+      <a href="timetable.html" data-nav="timetable">Timetable</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span id="userChip" class="user-chip" style="display:none;"></span>
+      <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+      <button class="btn ghost sm" onclick="logout()">⬅ Logout</button>
+    </div>
+  </div>
+</header>
+
+<main class="page-shell">
+
+  <div class="page-header">
+    <div>
+      <h1>🔔 Notification Log</h1>
+      <p>Every timetable change made by an admin that affects your lectures — newest first.</p>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn secondary sm" onclick="markAllRead()">✅ Mark all as read</button>
+      <button class="btn danger sm" onclick="clearAllNotifications()">🗑️ Clear all</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:22px;">
+    <div class="log-toolbar">
+      <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+        <span class="muted" id="unreadCount"></span>
+        <div class="tabs" style="border:none; margin:0;">
+          <button class="active" onclick="filterLog('all', this)">All</button>
+          <button onclick="filterLog('unread', this)">Unread</button>
+          <button onclick="filterLog('read', this)">Read</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="notifLog"></div>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 Smart Classroom AI · Teacher Notification Log · Powered by Supabase PostgreSQL</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+<script>
+  let currentFilter = 'all';
+
+  async function renderLog(filter){
+    const log = document.getElementById('notifLog');
+    if(!log) return;
+    const user = getCurrentUser();
+    if(!user) return;
+
+    const notes = await fetchNotifications(user.name);
+    _notifications = notes;
+
+    const unread = notes.filter(n => !n.read).length;
+    const unreadEl = document.getElementById('unreadCount');
+    if(unreadEl){
+      unreadEl.textContent = unread ? `${unread} unread notification${unread > 1 ? 's' : ''}` : 'All caught up ✓';
+    }
+
+    const filtered = filter === 'unread' ? notes.filter(n => !n.read)
+                   : filter === 'read'   ? notes.filter(n =>  n.read)
+                   : notes;
+
+    if(!filtered.length){
+      log.innerHTML = `<div class="notif-empty">
+        <div class="big">🔔</div>
+        <p>${filter === 'all' ? "No notifications yet. You'll see a message here whenever an admin changes one of your lectures." : 'No ' + filter + ' notifications.'}</p>
+      </div>`;
+      return;
+    }
+
+    log.innerHTML = filtered.map(n => {
+      const when = new Date(n.created_at || Date.now()).toLocaleString('en-IN', {
+        dateStyle:'medium', timeStyle:'short'
+      });
+      return `<div class="notif-item ${n.read ? 'read' : 'unread'}">
+        <div class="notif-label">${n.read ? '● Read' : '● New'}</div>
+        <div class="notif-msg">📋 ${n.message}</div>
+        <div class="notif-time">${when}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function filterLog(type, btn){
+    currentFilter = type;
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    renderLog(type);
+  }
+
+  async function markAllRead(){
+    const user = getCurrentUser();
+    if(!user) return;
+    const ok = await dbMarkNotificationsRead(user.name);
+    if(ok){
+      await renderLog(currentFilter);
+      toast('All notifications marked as read.', 'success');
+    }
+  }
+
+  async function clearAllNotifications(){
+    if(!confirm('Clear your entire notification history?')) return;
+    const user = getCurrentUser();
+    if(!user) return;
+    const ok = await dbDeleteNotifications(user.name);
+    if(ok){
+      await renderLog(currentFilter);
+      toast('Notification log cleared.', 'info');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const user = await requireAuth(['teacher']);
+    if(user){
+      await renderLog('all');
+    }
+  });
+</script>
+</body>
+</html>

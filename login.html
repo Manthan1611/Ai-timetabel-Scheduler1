@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — Smart Classroom AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="login">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand"><span class="brand-mark">🏫</span> Smart Classroom AI</a>
+    <nav class="nav-links">
+      <a href="index.html" data-nav="home">Home</a>
+      <a href="login.html" data-nav="login">Login</a>
+      <a href="timetable.html" data-nav="timetable">Timetable</a>
+    </nav>
+    <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+  </div>
+</header>
+
+<div class="auth-shell">
+
+  <div class="auth-side">
+    <div>
+      <span class="eyebrow" style="background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.3); color:#fff;">Secure portal</span>
+      <h2>Pick your role to continue</h2>
+      <p>Each portal is tuned for what that role actually needs on a given day.</p>
+      <div class="role-pick">
+        <button type="button" data-role="admin" onclick="selectRole('admin')">👨‍💼 Admin — manage the college</button>
+        <button type="button" data-role="teacher" onclick="selectRole('teacher')">👨‍🏫 Teacher — schedule lectures</button>
+        <button type="button" data-role="student" onclick="selectRole('student')">🎓 Student — view my day</button>
+      </div>
+    </div>
+    <p style="margin-top:30px; font-size:.8rem;">Your account is saved locally in this browser and your name is shown on your dashboard.</p>
+  </div>
+
+  <div class="auth-form">
+    <h2>Welcome back</h2>
+    <p>Sign in to reach your dashboard.</p>
+
+    <form onsubmit="return validateLogin()">
+
+      <div class="field" id="roleField">
+        <label for="role">User Type</label>
+        <select id="role" onchange="handleRoleChange()">
+          <option value="">Select user type</option>
+          <option value="admin">Admin</option>
+          <option value="teacher">Teacher</option>
+          <option value="student">Student</option>
+        </select>
+        <div class="error">Please select a user type.</div>
+      </div>
+
+      <div class="field" id="nameField">
+        <label for="name">Email / Name</label>
+        <input type="text" id="name" placeholder="Enter your email or name" autocomplete="username">
+        <div class="hint">Enter registered email address or name.</div>
+        <div class="error">Please enter your email or name.</div>
+      </div>
+
+      <div class="field" id="rollnoField" style="display:none;">
+        <label for="rollno">Roll Number</label>
+        <input type="text" id="rollno" placeholder="Enter your roll number">
+        <div class="error">Roll number cannot be empty.</div>
+      </div>
+
+      <div class="field" id="passField">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password" autocomplete="current-password">
+        <div class="hint">Minimum 6 characters.</div>
+        <div class="error">Password must be at least 6 characters.</div>
+      </div>
+
+      <button type="submit" class="btn block" id="loginSubmitBtn">🔐 Login</button>
+
+      <p style="text-align:center; margin-top:18px;">New here? <a href="registration.html">Create an account</a></p>
+      <p style="text-align:center; margin-top:8px;"><a href="index.html">⬅ Back to home</a></p>
+
+    </form>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 Smart Classroom AI · Powered by Supabase PostgreSQL</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>

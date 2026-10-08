@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard — Smart Classroom AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="student">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand"><span class="brand-mark">🏫</span> Smart Classroom AI</a>
+    <nav class="nav-links">
+      <a href="student.html" data-nav="student" class="active">Student</a>
+      <a href="timetable.html" data-nav="timetable">Timetable</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span id="userChip" class="user-chip" style="display:none;"></span>
+      <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+      <button class="btn ghost sm" onclick="logout()">⬅ Logout</button>
+    </div>
+  </div>
+</header>
+
+<main class="page-shell">
+
+  <div class="page-header">
+    <div>
+      <h1>🎓 Welcome, <span id="studentNameDisplay">Student</span></h1>
+      <p>Here's your day, your attendance, and anything new from your teachers.</p>
+      <h2 id="welcomeUser"></h2>
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="align-items:start;">
+
+    <div class="card">
+      <h3>👤 Student Information</h3>
+      <p><b>Name:</b> <span id="profileName">—</span></p>
+      <p><b>Roll No:</b> <span id="profileRoll">—</span></p>
+      <p><b>Role:</b> <span class="badge role">Student</span></p>
+    </div>
+
+    <div class="card" id="studentAttendanceCard">
+      <h3>📊 Attendance</h3>
+      <div class="progress"><div class="progress-bar" id="studentAttendanceBar" style="width:0%;">0%</div></div>
+      <p class="muted" id="studentAttendanceSub" style="margin-top:12px;">Loading attendance records…</p>
+      <div id="attendanceWarning" style="display:none; margin-top:10px; background:color-mix(in srgb, var(--accent-3) 14%, var(--surface)); border-left:4px solid var(--accent-3); padding:10px 14px; border-radius:8px; font-size:.85rem; color:var(--accent-3-ink); font-weight:600;">
+        ⚠️ Warning: Attendance is below 75% requirement.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:22px;">
+    <h3>📅 Today's Timetable — <span id="todayLabel"></span></h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Time</th><th>Subject</th><th>Room</th></tr></thead>
+        <tbody id="studentTodayBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:22px;">
+    <h3>🔎 Search Full Timetable</h3>
+    <div class="search-box" style="margin-bottom:16px;">
+      <input type="text" id="studentSearch" placeholder="Search by subject or day…" oninput="searchStudentTimetable()">
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Day</th><th>Time</th><th>Subject</th><th>Teacher</th><th>Room</th></tr></thead>
+        <tbody id="studentSearchBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:22px;">
+    <h3>📢 AI Notifications</h3>
+    <div id="studentNotificationsList">
+      <div class="notice">✅ Machine Learning class shifted to <b>Room 102</b> this week.</div>
+      <div class="notice">📚 Tomorrow's first lecture starts at <b>9:00 AM</b>.</div>
+      <div class="notice">📝 Assignment submission deadline is <b>Friday</b>.</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:22px;">
+    <h3>🏫 Smart Classroom Status</h3>
+    <p class="muted" style="margin-top:-6px;">Live room status, set by admin — capacity, equipment and current availability.</p>
+    <div class="grid cols-3" id="studentClassroomStatus"></div>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 Smart Classroom AI · Student Portal · Powered by Supabase PostgreSQL</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>

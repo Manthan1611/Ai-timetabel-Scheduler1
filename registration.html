@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — Smart Classroom AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="register">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand"><span class="brand-mark">🏫</span> Smart Classroom AI</a>
+    <nav class="nav-links">
+      <a href="index.html" data-nav="home">Home</a>
+      <a href="login.html" data-nav="login">Login</a>
+      <a href="registration.html" data-nav="register">Register</a>
+      <a href="timetable.html" data-nav="timetable">Timetable</a>
+    </nav>
+    <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+  </div>
+</header>
+
+<div class="auth-shell">
+
+  <div class="auth-side">
+    <div>
+      <span class="eyebrow" style="background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.3); color:#fff;">New here?</span>
+      <h2>Create your account</h2>
+      <p>Tell us who you are first — your dashboard depends on it.</p>
+      <div class="role-pick">
+        <button type="button" data-role="admin" onclick="regSelectRole('admin')">👨‍💼 Admin — manage the college</button>
+        <button type="button" data-role="teacher" onclick="regSelectRole('teacher')">👨‍🏫 Teacher — schedule lectures</button>
+        <button type="button" data-role="student" onclick="regSelectRole('student')">🎓 Student — view my day</button>
+      </div>
+    </div>
+    <p style="margin-top:30px; font-size:.8rem;">Already registered? <a href="login.html" style="color:#fff; text-decoration:underline;">Sign in instead</a>.</p>
+  </div>
+
+  <div class="auth-form">
+    <h2>Registration Form</h2>
+    <p>Pick your role, then fill in your details — only alphabets, numbers and standard email formats are accepted where noted.</p>
+
+    <form id="registrationForm" onsubmit="return validateRegistration()" novalidate>
+
+      <div class="field" id="regRoleField">
+        <label for="regRole">User Type</label>
+        <select id="regRole" onchange="regHandleRoleChange()">
+          <option value="">Select user type</option>
+          <option value="admin">Admin</option>
+          <option value="teacher">Teacher</option>
+          <option value="student">Student</option>
+        </select>
+        <div class="error">Please select whether you're registering as Admin, Teacher or Student.</div>
+      </div>
+
+      <div class="field" id="fnameField">
+        <label for="fname">First Name</label>
+        <input type="text" id="fname" placeholder="Enter first name">
+        <div class="hint">Alphabets only, minimum 2 characters.</div>
+        <div class="error">First name should contain only alphabets and be at least 2 characters.</div>
+      </div>
+
+      <div class="field" id="lnameField">
+        <label for="lname">Last Name</label>
+        <input type="text" id="lname" placeholder="Enter last name">
+        <div class="error">Last name cannot be empty.</div>
+      </div>
+
+      <div class="field" id="regRollnoField" style="display:none;">
+        <label for="regRollno">Roll Number</label>
+        <input type="text" id="regRollno" placeholder="Enter your roll number">
+        <div class="hint">Required for student accounts.</div>
+        <div class="error">Roll number cannot be empty.</div>
+      </div>
+
+      <div class="field" id="regPassField">
+        <label for="regPassword">Password</label>
+        <input type="password" id="regPassword" placeholder="Enter password">
+        <div class="hint">Minimum 6 characters.</div>
+        <div class="error">Password must be at least 6 characters.</div>
+      </div>
+
+      <div class="field" id="regEmailField">
+        <label for="regEmail">E-mail ID</label>
+        <input type="text" id="regEmail" placeholder="name@domain.com">
+        <div class="hint">Format: name@domain.com</div>
+        <div class="error">Enter a valid email address.</div>
+      </div>
+
+      <div class="field" id="mobileField">
+        <label for="mobile">Mobile Number</label>
+        <input type="text" id="mobile" placeholder="10-digit mobile number" maxlength="10">
+        <div class="hint">Exactly 10 digits, numbers only.</div>
+        <div class="error">Mobile number must contain exactly 10 digits.</div>
+      </div>
+
+      <div class="field" id="addressField">
+        <label for="address">Address</label>
+        <textarea id="address" placeholder="Enter your address"></textarea>
+        <div class="error">Address cannot be empty.</div>
+      </div>
+
+      <button type="submit" class="btn block" id="regSubmitBtn">📝 Register</button>
+
+      <p style="text-align:center; margin-top:18px;"><a href="index.html">⬅ Back to home</a></p>
+
+    </form>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 Smart Classroom AI · Powered by Supabase PostgreSQL</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>

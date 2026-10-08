@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — Smart Classroom AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="admin">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand"><span class="brand-mark">🏫</span> Smart Classroom AI</a>
+    <nav class="nav-links">
+      <a href="admin.html" data-nav="admin" class="active">Admin</a>
+      <a href="timetable.html" data-nav="timetable">Timetable</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span id="userChip" class="user-chip" style="display:none;"></span>
+      <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+      <button class="btn ghost sm" onclick="logout()">⬅ Logout</button>
+    </div>
+  </div>
+</header>
+
+<main class="page-shell">
+
+  <div class="page-header">
+    <div>
+      <h1>👨‍💼 Welcome, <span id="adminNameDisplay">Admin</span></h1>
+      <p>Manage students, teachers, classrooms and monitor the college at a glance.</p>
+    </div>
+  </div>
+
+  <div class="grid cols-4" style="margin-bottom:36px;">
+    <div class="card stat-card accent-a">
+      <span class="stat-label">Students</span>
+      <span class="stat-value" id="statStudents">0</span>
+      <span class="stat-sub">Enrolled across all departments</span>
+    </div>
+    <div class="card stat-card accent-b">
+      <span class="stat-label">Teachers</span>
+      <span class="stat-value" id="statTeachers">0</span>
+      <span class="stat-sub">Active faculty members</span>
+    </div>
+    <div class="card stat-card accent-c">
+      <span class="stat-label">Classrooms</span>
+      <span class="stat-value" id="statClassrooms">0</span>
+      <span class="stat-sub">Rooms &amp; labs on record</span>
+    </div>
+    <div class="card stat-card accent-d">
+      <span class="stat-label">Today's Classes</span>
+      <span class="stat-value" id="statToday">0</span>
+      <span class="stat-sub">Scheduled for today</span>
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="align-items:start;">
+
+    <div class="card">
+      <h3>➕ Add / Edit Student</h3>
+      <div class="field"><label for="studentName">Student Name</label><input type="text" id="studentName" placeholder="e.g. Riya Sharma"></div>
+      <div class="form-row">
+        <div class="field"><label for="studentRoll">Roll Number</label><input type="text" id="studentRoll" placeholder="e.g. 24101A0058"></div>
+        <div class="field"><label for="studentDept">Department</label><input type="text" id="studentDept" placeholder="e.g. Information Technology"></div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="studentSem">Semester</label>
+          <select id="studentSem"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option><option>8</option></select>
+        </div>
+        <div class="field">
+          <label for="studentDiv">Division</label>
+          <select id="studentDiv"><option>A</option><option>B</option><option>C</option></select>
+        </div>
+      </div>
+      <button class="btn block" id="studentSubmitBtn" onclick="saveStudent()">➕ Add Student</button>
+    </div>
+
+    <div class="card">
+      <h3>➕ Add / Edit Teacher</h3>
+      <div class="field"><label for="teacherName">Teacher Name</label><input type="text" id="teacherName" placeholder="e.g. Dr. Sanjay Rao"></div>
+      <div class="field"><label for="teacherSubject">Subject</label><input type="text" id="teacherSubject" placeholder="e.g. Machine Learning"></div>
+      <button class="btn block" id="teacherSubmitBtn" onclick="saveTeacher()">➕ Add Teacher</button>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:22px;">
+    <h3>📋 Students</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Name</th><th>Roll No</th><th>Department</th><th>Sem</th><th>Div</th><th>Actions</th></tr></thead>
+        <tbody id="studentsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:22px;">
+    <h3>📋 Teachers</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Name</th><th>Subject</th><th>Actions</th></tr></thead>
+        <tbody id="teachersBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:22px;">
+    <h3>🏫 Add / Edit Classroom</h3>
+    <div class="form-row">
+      <div class="field"><label for="roomName">Classroom Name</label><input type="text" id="roomName" placeholder="e.g. Room 104"></div>
+      <div class="field"><label for="roomCapacity">Capacity</label><input type="number" id="roomCapacity" placeholder="e.g. 60"></div>
+    </div>
+    <div class="tag-row" style="margin-bottom:16px;">
+      <label><input type="checkbox" id="roomSmartboard"> Smart Board</label>
+      <label><input type="checkbox" id="roomProjector"> Projector</label>
+      <label><input type="checkbox" id="roomWifi"> WiFi</label>
+      <label><input type="checkbox" id="roomAc"> AC</label>
+    </div>
+    <div class="field">
+      <label for="roomStatus">Status</label>
+      <select id="roomStatus"><option>Available</option><option>Occupied</option></select>
+    </div>
+    <button class="btn block" id="roomSubmitBtn" onclick="saveRoom()">➕ Add Classroom</button>
+  </div>
+
+  <div class="card" style="margin-top:22px;">
+    <h3>🏫 Classroom Directory</h3>
+    <div class="grid cols-3" id="classroomCards" style="margin-bottom:26px;"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Room</th><th>Capacity</th><th>Smart Board</th><th>Projector</th><th>WiFi</th><th>AC</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="classroomsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:22px;">
+    <h3>🕒 Timetable Management</h3>
+    <p class="muted" style="margin-top:-6px;">As admin you can add, edit or delete any lecture. The teacher it belongs to is notified automatically whenever you change or remove one of theirs.</p>
+
+    <div class="form-row">
+      <div class="field"><label for="ttSubject">Subject</label><input type="text" id="ttSubject" placeholder="e.g. Machine Learning"></div>
+      <div class="field">
+        <label for="ttTeacher">Teacher</label>
+        <select id="ttTeacher"></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label for="ttRoom">Classroom</label>
+        <select id="ttRoom"></select>
+      </div>
+      <div class="field">
+        <label for="ttDay">Day</label>
+        <select id="ttDay">
+          <option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label for="ttTime">Time Slot</label>
+        <select id="ttTime">
+          <option>09:00 - 10:00</option>
+          <option>10:00 - 11:00</option>
+          <option>11:15 - 12:15</option>
+          <option>01:00 - 02:00</option>
+          <option>02:00 - 03:00</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="ttSem">Semester</label>
+        <select id="ttSem"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option></select>
+      </div>
+    </div>
+    <button class="btn block" id="ttSubmitBtn" onclick="adminSaveLecture()">➕ Add Lecture</button>
+
+    <div class="table-wrap" style="margin-top:22px;">
+      <table>
+        <thead><tr><th>Day</th><th>Time</th><th>Subject</th><th>Teacher</th><th>Room</th><th>Sem</th><th>Actions</th></tr></thead>
+        <tbody id="adminTimetableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 Smart Classroom AI · Admin Portal · Powered by Supabase PostgreSQL</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>

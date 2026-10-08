@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Dashboard — Smart Classroom AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="teacher">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand"><span class="brand-mark">🏫</span> Smart Classroom AI</a>
+    <nav class="nav-links">
+      <a href="teacher.html" data-nav="teacher" class="active">Teacher</a>
+      <a href="timetable.html" data-nav="timetable">Timetable</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span id="userChip" class="user-chip" style="display:none;"></span>
+      <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+      <button class="btn ghost sm" onclick="logout()">⬅ Logout</button>
+    </div>
+  </div>
+</header>
+
+<main class="page-shell">
+
+  <div class="page-header">
+    <div>
+      <h1>👨‍🏫 Welcome, <span id="teacherNameDisplay">Teacher</span></h1>
+      <p>Schedule lectures, avoid clashes automatically, or generate your whole week in one click.</p>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <a href="notifications.html" class="btn secondary">🔔 Notification Log</a>
+      <button class="btn gold" onclick="generateAITimetable(true)">🤖 Generate My AI Timetable</button>
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="align-items:start;">
+
+    <div class="card">
+      <h3>➕ Schedule a Lecture</h3>
+      <div class="field"><label for="subject">Subject</label><input type="text" id="subject" placeholder="e.g. Machine Learning"></div>
+      <div class="form-row">
+        <div class="field">
+          <label for="lecSem">Semester</label>
+          <select id="lecSem"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option></select>
+        </div>
+        <div class="field">
+          <label for="lecDiv">Division</label>
+          <select id="lecDiv"><option>A</option><option>B</option><option>C</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="room">Classroom</label>
+        <select id="room">
+          <option>Room 101</option>
+          <option>Room 102</option>
+          <option>Room 203</option>
+          <option>Lab A</option>
+          <option>Lab B</option>
+          <option>Seminar Hall</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="lecDay">Day</label>
+          <select id="lecDay">
+            <option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="time">Time Slot</label>
+          <select id="time">
+            <option>09:00 - 10:00</option>
+            <option>10:00 - 11:00</option>
+            <option>11:15 - 12:15</option>
+            <option>01:00 - 02:00</option>
+            <option>02:00 - 03:00</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn block" id="lectureSubmitBtn" onclick="saveLecture()">📌 Add to Timetable</button>
+      <p class="muted" style="margin-top:10px;">Clashing rooms or double-booked teachers are blocked automatically. You can only edit your own lectures — admins can edit any lecture, and you'll be notified if they change one of yours.</p>
+    </div>
+
+    <div class="card">
+      <h3>👤 Profile</h3>
+      <p><b>Name:</b> <span id="profileName">—</span></p>
+      <p><b>Role:</b> <span class="badge role">Teacher</span></p>
+      <hr class="divider">
+      <h3>📅 Quick Links</h3>
+      <div class="tag-row">
+        <a href="timetable.html" class="btn secondary sm">Full Week Timetable</a>
+        <a href="admin.html" class="btn ghost sm">Admin View</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:22px;" id="notificationsCard">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+      <h3 style="margin-bottom:0;">🔔 Notifications <span class="badge role" id="unreadBadge" style="display:none;">0 new</span></h3>
+      <button class="btn ghost sm" onclick="markNotificationsRead()">Mark all as read</button>
+    </div>
+    <div id="notificationsList" style="margin-top:14px;"></div>
+  </div>
+
+  <div class="card" style="margin-top:22px;">
+    <h3>📋 My Lectures</h3>
+    <p class="muted" style="margin-top:-6px;">Click ✏️ to edit a lecture you already scheduled, or 🗑️ to remove it.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Day</th><th>Time</th><th>Subject</th><th>Room</th><th>Sem</th><th>Div</th><th>Actions</th></tr></thead>
+        <tbody id="lectureBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:22px;" id="teacherAttendanceCard">
+    <h3>📝 Mark Attendance</h3>
+    <p class="muted" style="margin-top:-6px;">Select one of your lectures and record attendance for students in that class.</p>
+    <div class="form-row">
+      <div class="field">
+        <label for="attLectureSelect">Lecture</label>
+        <select id="attLectureSelect" onchange="loadStudentsForAttendance()"></select>
+      </div>
+      <div class="field">
+        <label for="attDate">Date</label>
+        <input type="date" id="attDate" onchange="loadStudentsForAttendance()">
+      </div>
+    </div>
+    <div class="table-wrap" style="margin-top:10px;">
+      <table>
+        <thead><tr><th>Roll No</th><th>Student Name</th><th>Dept / Div</th><th>Status</th></tr></thead>
+        <tbody id="attendanceStudentList">
+          <tr class="empty-row"><td colspan="4">Select a lecture to load students.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="btn block" id="saveAttendanceBtn" style="margin-top:16px;" onclick="saveClassAttendance()">💾 Submit Attendance</button>
+  </div>
+
+  <div class="card" style="margin-top:22px;">
+    <h3>🏫 Smart Classroom Status</h3>
+    <p class="muted" style="margin-top:-6px;">Live room status, set by admin — capacity, equipment and current availability.</p>
+    <div class="grid cols-3" id="teacherClassroomStatus"></div>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 Smart Classroom AI · Teacher Portal · Powered by Supabase PostgreSQL</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>

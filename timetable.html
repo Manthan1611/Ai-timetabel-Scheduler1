@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Timetable — Smart Classroom AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="timetable">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand"><span class="brand-mark">🏫</span> Smart Classroom AI</a>
+    <nav class="nav-links">
+      <a href="index.html" data-nav="home">Home</a>
+      <a href="timetable.html" data-nav="timetable" class="active">Timetable</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span id="userChip" class="user-chip" style="display:none;"></span>
+      <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+      <button class="btn ghost sm" id="logoutBtn" style="display:none;" onclick="logout()">⬅ Logout</button>
+    </div>
+  </div>
+</header>
+
+<main class="page-shell">
+
+  <div class="page-header">
+    <div>
+      <h1>🤖 AI Timetable Generator</h1>
+      <p>One live schedule, shared by every portal — regenerate it any time without creating a clash.</p>
+      <p class="muted" id="editHint">Sign in as a teacher to manage your own lectures, or as an admin to edit any lecture — on their dashboards.</p>
+    </div>
+    <button class="btn gold" id="regenerateBtn" style="display:none;" onclick="generateAITimetable(false)">⚡ Generate Full-College Timetable</button>
+  </div>
+
+  <div class="card">
+    <div class="tt-toolbar">
+      <div class="search-box">
+        <input type="text" id="ttSearch" placeholder="Search by subject or day…" oninput="searchFullTimetable()">
+      </div>
+      <span class="muted">Highlighted cells match your search.</span>
+    </div>
+    <div class="timetable-grid" id="fullTimetableGrid"></div>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 Smart Classroom AI · Timetable Engine · Powered by Supabase PostgreSQL</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>
